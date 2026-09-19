@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BBA Batch 2029 | University Portal</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            800: '#152238',
+                            900: '#0a1128',
+                        },
+                        gold: {
+                            400: '#facc15',
+                            500: '#eab308',
+                            600: '#ca8a04',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        h1, h2, h3, .serif-font {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        /* Glassmorphism */
+        .glass-nav {
+            background: rgba(10, 17, 40, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+        }
+        .glass-dark {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Animations */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .view-section { display: none; }
+        .view-section.active { display: block; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Loader */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #eab308;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+<!-- Navigation -->
+<nav class="fixed w-full z-50 glass-nav transition-all duration-300" id="navbar">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-20">
+            <!-- Logo -->
+            <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="navigate('home')">
+                <div class="w-10 h-10 rounded-full bg-gold-500 flex items-center justify-center text-navy-900 font-bold text-xl mr-3 shadow-lg shadow-gold-500/30">
+                    B
+                </div>
+                <div>
+                    <span class="text-white font-serif font-bold text-xl tracking-wide block">BBA 2029</span>
+                    <span class="text-gold-400 text-xs tracking-widest uppercase">University Portal</span>
+                </div>
+            </div>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex space-x-1 lg:space-x-4 items-center">
+                <a href="#home" class="nav-link text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors" data-target="home">Home</a>
+                <a href="#students" class="nav-link text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors" data-target="students">Students</a>
+                <a href="#courses" class="nav-link text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors" data-target="courses">Courses</a>
+                <a href="#events" class="nav-link text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors" data-target="events">Events</a>
+                <a href="#announcements" class="nav-link text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors" data-target="announcements">Announcements</a>
+                
+                <a href="#admin" class="ml-4 bg-white/10 hover:bg-white/20 text-white border border-white/20 px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2" data-target="admin">
+                    <i class="fas fa-lock text-xs"></i> Admin
+                </a>
+            </div>
+
+            <!-- Mobile menu button -->
+            <div class="md:hidden flex items-center">
+                <button id="mobile-menu-btn" class="text-gray-300 hover:text-white focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-navy-900 border-t border-white/10 absolute w-full">
+        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            <a href="#home" class="mobile-nav-link text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium" data-target="home">Home</a>
+            <a href="#students" class="mobile-nav-link text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium" data-target="students">Students</a>
+            <a href="#courses" class="mobile-nav-link text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium" data-target="courses">Courses</a>
+            <a href="#events" class="mobile-nav-link text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium" data-target="events">Events</a>
+            <a href="#announcements" class="mobile-nav-link text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium" data-target="announcements">Announcements</a>
+            <a href="#admin" class="mobile-nav-link text-gold-400 block px-3 py-2 rounded-md text-base font-medium" data-target="admin">Admin Portal</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content Area -->
+<main class="flex-grow pt-20">
+    
+    <!-- HOME VIEW -->
+    <section id="view-home" class="view-section active fade-in">
+        <!-- Hero Section -->
+        <div class="relative bg-navy-900 overflow-hidden">
+            <div class="absolute inset-0">
+                <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="University" class="w-full h-full object-cover opacity-20">
+                <div class="absolute inset-0 bg-gradient-to-t from-navy-900 to-transparent"></div>
+            </div>
+            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 lg:py-48 flex flex-col items-center text-center">
+                <span class="text-gold-400 font-semibold tracking-wider uppercase mb-4 text-sm md:text-base">Welcome to the Official Portal</span>
+                <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-lg">BBA BATCH <span class="text-gold-500">2029</span></h1>
+                <p class="text-xl md:text-2xl text-gray-300 font-light max-w-3xl italic mb-10">"One Batch. One Journey. One Legacy."</p>
+                <div class="flex gap-4">
+                    <button onclick="navigate('students')" class="bg-gold-500 hover:bg-gold-600 text-navy-900 font-semibold px-8 py-3 rounded-full transition-transform hover:scale-105 shadow-lg shadow-gold-500/20">
+                        View Directory
+                    </button>
+                    <button onclick="navigate('events')" class="bg-white/10 hover:bg-white/20 text-white border border-white/20 font-medium px-8 py-3 rounded-full backdrop-blur-sm transition-all">
+                        Upcoming Events
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-10 mb-20">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+                <div class="glass-card p-6 rounded-2xl text-center">
+                    <div class="text-4xl font-serif font-bold text-navy-800 mb-2 counter" data-target="350">0</div>
+                    <div class="text-sm text-slate-500 uppercase tracking-wider font-semibold">Total Students</div>
+                </div>
+                <div class="glass-card p-6 rounded-2xl text-center">
+                    <div class="text-4xl font-serif font-bold text-navy-800 mb-2 counter" data-target="6">0</div>
+                    <div class="text-sm text-slate-500 uppercase tracking-wider font-semibold">Sections</div>
+                </div>
+                <div class="glass-card p-6 rounded-2xl text-center">
+                    <div class="text-4xl font-serif font-bold text-navy-800 mb-2 counter" data-target="42">0</div>
+                    <div class="text-sm text-slate-500 uppercase tracking-wider font-semibold">Courses</div>
+                </div>
+                <div class="glass-card p-6 rounded-2xl text-center">
+                    <div class="text-4xl font-serif font-bold text-navy-800 mb-2 counter" data-target="15">0</div>
+                    <div class="text-sm text-slate-500 uppercase tracking-wider font-semibold">Societies</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Latest Updates Preview -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Announcements Preview -->
+                <div>
+                    <div class="flex justify-between items-end mb-6 border-b border-gray-200 pb-4">
+                        <h2 class="text-3xl font-serif font-bold text-navy-900">Latest Announcements</h2>
+                        <button onclick="navigate('announcements')" class="text-gold-600 hover:text-gold-700 font-medium text-sm">View All &rarr;</button>
+                    </div>
+                    <div id="home-announcements-container" class="space-y-4">
+                        <!-- Populated by JS -->
+                        <div class="animate-pulse flex space-x-4">
+                            <div class="flex-1 space-y-4 py-1">
+                                <div class="h-4 bg-slate-200 rounded w-3/4"></div>
+                                <div class="space-y-2"><div class="h-4 bg-slate-200 rounded"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Events Preview -->
+                <div>
+                    <div class="flex justify-between items-end mb-6 border-b border-gray-200 pb-4">
+                        <h2 class="text-3xl font-serif font-bold text-navy-900">Upcoming Events</h2>
+                        <button onclick="navigate('events')" class="text-gold-600 hover:text-gold-700 font-medium text-sm">View Calendar &rarr;</button>
+                    </div>
+                    <div id="home-events-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STUDENTS VIEW -->
+    <section id="view-students" class="view-section fade-in pb-20">
+        <div class="bg-navy-900 py-16 text-center">
+            <h1 class="text-4xl md:text-5xl font-serif font-bold text-white mb-4">Student Directory</h1>
+            <p class="text-gray-300 max-w-2xl mx-auto px-4">Connect with peers, find project partners, and build your professional network within the batch.</p>
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10">
+            <div class="glass-card rounded-xl p-4 mb-8 flex flex-col sm:flex-row gap-4 items-center justify-between">
+                <div class="relative w-full sm:w-96">
+                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" id="student-search" placeholder="Search by name, ID or skills..." class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none transition-all">
+                </div>
+                <div class="flex gap-2 w-full sm:w-auto">
+                    <select id="student-section-filter" class="border border-gray-200 rounded-lg px-4 py-2 bg-white focus:ring-2 focus:ring-gold-500 outline-none w-full sm:w-auto">
+                        <option value="">All Sections</option>
+                        <option value="A">Section A</option>
+                        <option value="B">Section B</option>
+                        <option value="C">Section C</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="students-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Students populated by JS -->
+                <div class="col-span-full flex justify-center py-12"><div class="loader"></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- COURSES VIEW -->
+    <section id="view-courses" class="view-section fade-in pb-20">
+        <div class="bg-navy-900 py-16 text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-serif font-bold text-white mb-4">Academic Courses</h1>
+        </div>
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Code</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Instructor</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Credits</th>
+                            </tr>
+                        </thead>
+                        <tbody id="courses-tbody" class="bg-white divide-y divide-gray-200">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EVENTS VIEW -->
+    <section id="view-events" class="view-section fade-in pb-20">
+        <div class="bg-navy-900 py-16 text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-serif font-bold text-white mb-4">Events Calendar</h1>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div id="events-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ANNOUNCEMENTS VIEW -->
+    <section id="view-announcements" class="view-section fade-in pb-20">
+        <div class="bg-navy-900 py-16 text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-serif font-bold text-white mb-4">Announcements</h1>
+        </div>
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div id="announcements-list" class="space-y-6">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ADMIN VIEW -->
+    <section id="view-admin" class="view-section fade-in pb-20">
+        <!-- Login State -->
+        <div id="admin-login-container" class="max-w-md mx-auto mt-20 p-8 glass-card rounded-2xl shadow-lg">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-navy-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-shield-alt text-2xl text-gold-500"></i>
+                </div>
+                <h2 class="text-2xl font-serif font-bold text-navy-900">Admin Portal</h2>
+                <p class="text-sm text-gray-500 mt-2">Authorized personnel only</p>
+            </div>
+            
+            <form id="admin-login-form" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" id="admin-email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy-900 focus:border-transparent outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" id="admin-password" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy-900 focus:border-transparent outline-none">
+                </div>
+                <button type="submit" class="w-full bg-navy-900 hover:bg-navy-800 text-white font-medium py-3 rounded-lg transition-colors flex justify-center items-center gap-2">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </form>
+            <div id="login-error" class="hidden mt-4 bg-red-50 text-red-600 text-sm p-3 rounded-lg border border-red-200"></div>
+        </div>
+
+        <!-- Dashboard State -->
+        <div id="admin-dashboard-container" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+            <div class="flex justify-between items-center mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <div>
+                    <h2 class="text-2xl font-serif font-bold text-navy-900">Dashboard Panel</h2>
+                    <p class="text-sm text-gray-500">Manage batch portal content</p>
+                </div>
+                <button id="admin-logout-btn" class="text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 px-4 py-2 rounded-lg font-medium transition-colors text-sm">
+                    Logout
+                </button>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-8">
+                <!-- Sidebar -->
+                <div class="w-full md:w-64 flex-shrink-0">
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 space-y-2 sticky top-24">
+                        <button onclick="setAdminTab('students')" class="admin-tab-btn w-full text-left px-4 py-3 rounded-lg font-medium transition-colors active" data-tab="students">Students</button>
+                        <button onclick="setAdminTab('courses')" class="admin-tab-btn w-full text-left px-4 py-3 rounded-lg font-medium transition-colors" data-tab="courses">Courses</button>
+                        <button onclick="setAdminTab('events')" class="admin-tab-btn w-full text-left px-4 py-3 rounded-lg font-medium transition-colors" data-tab="events">Events</button>
+                        <button onclick="setAdminTab('announcements')" class="admin-tab-btn w-full text-left px-4 py-3 rounded-lg font-medium transition-colors" data-tab="announcements">Announcements</button>
+                    </div>
+                </div>
+
+                <!-- Main Admin Area -->
+                <div class="flex-grow bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 id="admin-tab-title" class="text-xl font-bold text-navy-900 capitalize">Manage Students</h3>
+                        <button onclick="openFormModal()" class="bg-gold-500 hover:bg-gold-600 text-navy-900 font-medium px-4 py-2 rounded-lg transition-colors flex items-center gap-2">
+                            <i class="fas fa-plus"></i> Add New
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50" id="admin-table-head">
+                                <!-- Dynamic Headers -->
+                            </thead>
+                            <tbody id="admin-table-body" class="bg-white divide-y divide-gray-200">
+                                <!-- Dynamic Rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Footer -->
+<footer class="bg-navy-900 text-white pt-12 pb-8 border-t border-white/10 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-6 md:mb-0 text-center md:text-left">
+                <h3 class="text-2xl font-serif font-bold text-white mb-2">BBA Batch 2029</h3>
+                <p class="text-gray-400 text-sm">One Batch. One Journey. One Legacy.</p>
+            </div>
+            <div class="flex space-x-4">
+                <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-gold-500 hover:text-navy-900 transition-all"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-gold-500 hover:text-navy-900 transition-all"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-gold-500 hover:text-navy-900 transition-all"><i class="fas fa-envelope"></i></a>
+            </div>
+        </div>
+        <div class="border-t border-white/10 mt-8 pt-8 text-center text-sm text-gray-500">
+            &copy; 2026 BBA Batch 2029. All rights reserved. Designed for University Portal.
+        </div>
+    </div>
+</footer>
+
+<!-- Toast Notifications -->
+<div id="toast-container" class="fixed bottom-4 right-4 z-[60] flex flex-col gap-2"></div>
+
+<!-- Generic Admin Form Modal -->
+<div id="form-modal" class="fixed inset-0 z-[70] hidden">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeFormModal()"></div>
+    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-lg">
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <h3 id="form-modal-title" class="text-lg font-bold text-navy-900">Add Item</h3>
+                <button onclick="closeFormModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="dynamic-form" class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+                <!-- Dynamic Fields injected here -->
+            </form>
+            <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
+                <button onclick="closeFormModal()" class="px-4 py-2 text-gray-600 font-medium hover:bg-gray-200 rounded-lg transition-colors">Cancel</button>
+                <button onclick="submitForm(event)" class="px-4 py-2 bg-navy-900 text-white font-medium hover:bg-navy-800 rounded-lg transition-colors">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript Logic -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // --- CONFIGURATION ---
+    // Placeholder config for GitHub Pages deployment. 
+    // In this Immersive Environment, we use __firebase_config if available.
+    const defaultFirebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_AUTH_DOMAIN",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_STORAGE_BUCKET",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+
+    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : defaultFirebaseConfig;
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'bba-2029';
+
+    let app, auth, db;
+    try {
+        app = initializeApp(firebaseConfig);
+        auth = getAuth(app);
+        db = getFirestore(app);
+    } catch (e) {
+        console.error("Firebase init error (Did you replace the config?):", e);
+    }
+
+    // App State
+    const state = {
+        user: null,
+        data: {
+            students: [],
+            courses: [],
+            events: [],
+            announcements: []
+        },
+        adminTab: 'students',
+        editingId: null, // null for new, string id for edit
+        unsubscribes: {}
+    };
+
+    // --- SCHEMA DEFINITIONS FOR DYNAMIC ADMIN ---
+    const schemas = {
+        students: [
+            { name: 'name', label: 'Full Name', type: 'text', required: true, adminCol: true },
+            { name: 'studentId', label: 'Student ID', type: 'text', required: true, adminCol: true },
+            { name: 'section', label: 'Section', type: 'select', options: ['A', 'B', 'C'], required: true, adminCol: true },
+            { name: 'photoUrl', label: 'Photo URL', type: 'url', required: false },
+            { name: 'bio', label: 'Short Bio', type: 'textarea', required: false },
+            { name: 'skills', label: 'Skills (comma separated)', type: 'text', required: false }
+        ],
+        courses: [
+            { name: 'code', label: 'Course Code', type: 'text', required: true, adminCol: true },
+            { name: 'name', label: 'Course Name', type: 'text', required: true, adminCol: true },
+            { name: 'instructor', label: 'Instructor', type: 'text', required: true, adminCol: true },
+            { name: 'credits', label: 'Credit Hours', type: 'number', required: true, adminCol: true }
+        ],
+        events: [
+            { name: 'title', label: 'Event Title', type: 'text', required: true, adminCol: true },
+            { name: 'date', label: 'Date', type: 'date', required: true, adminCol: true },
+            { name: 'location', label: 'Location', type: 'text', required: true, adminCol: true },
+            { name: 'description', label: 'Description', type: 'textarea', required: false },
+            { name: 'imageUrl', label: 'Image URL', type: 'url', required: false }
+        ],
+        announcements: [
+            { name: 'title', label: 'Title', type: 'text', required: true, adminCol: true },
+            { name: 'date', label: 'Date', type: 'date', required: true, adminCol: true },
+            { name: 'priority', label: 'Priority', type: 'select', options: ['Normal', 'High'], required: true, adminCol: true },
+            { name: 'message', label: 'Message', type: 'textarea', required: true }
+        ]
+    };
+
+    // --- UTILITIES ---
+    const showToast = (message, type = 'success') => {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        const bg = type === 'success' ? 'bg-green-600' : 'bg-red-600';
+        toast.className = `${bg} text-white px-4 py-3 rounded-lg shadow-lg fade-in flex items-center gap-2 text-sm font-medium`;
+        toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+        container.appendChild(toast);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transition = 'opacity 0.3s ease';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    };
+
+    const getCollectionRef = (colName) => {
+        // MANDATORY RULE 1 for Immersive Environment compatibility
+        return collection(db, 'artifacts', appId, 'public', 'data', colName);
+    };
+
+    // --- INITIALIZATION & AUTH ---
+    async function initApp() {
+        if (!auth) return; // If config failed
+        
+        try {
+            // Immersive Environment Auto-Auth
+            if (typeof __initial_auth_token !== 'undefined') {
+                await signInWithCustomToken(auth, __initial_auth_token);
+            } else if (auth.currentUser === null && !localStorage.getItem('admin_attempt')) {
+                // For public view, anonymously sign in to read data
+                await signInAnonymously(auth);
+            }
+        } catch (e) {
+            console.log("Auth init flow note:", e.message);
+        }
+
+        // Listen for auth state
+        onAuthStateChanged(auth, (user) => {
+            state.user = user;
+            if (user) {
+                // User exists, setup data listeners
+                setupDataListeners();
+                
+                // If it's a real user (not anonymous), show admin dashboard
+                if (!user.isAnonymous) {
+                    document.getElementById('admin-login-container').classList.add('hidden');
+                    document.getElementById('admin-dashboard-container').classList.remove('hidden');
+                    renderAdminTable();
+                } else {
+                    document.getElementById('admin-login-container').classList.remove('hidden');
+                    document.getElementById('admin-dashboard-container').classList.add('hidden');
+                }
+            }
+        });
+    }
+
+    // --- MOCK DATA SEEDING (If Empty) ---
+    async function seedMockData(colName) {
+        if(!state.user) return; // Guard
+        const mocks = {
+            students: [
+                { name: "Ali Khan", studentId: "2029-001", section: "A", skills: "Marketing, Excel", bio: "Passionate about branding." },
+                { name: "Sarah Ahmed", studentId: "2029-042", section: "B", skills: "Finance, Python", bio: "Future CFO." }
+            ],
+            announcements: [
+                { title: "Welcome to Fall 2026", date: "2026-09-01", priority: "High", message: "Classes commence next Monday." },
+                { title: "Case Study Competition", date: "2026-09-20", priority: "Normal", message: "Register your teams by Friday." }
+            ],
+            courses: [
+                { code: "MGT201", name: "Principles of Management", instructor: "Dr. Hassan", credits: 3 },
+                { code: "FIN302", name: "Corporate Finance", instructor: "Prof. Raza", credits: 4 }
+            ],
+            events: [
+                { title: "Batch Welcome Party", date: "2026-10-05", location: "Main Auditorium", description: "Join us for music, food, and fun." }
+            ]
+        };
+
+        if(mocks[colName]) {
+            const colRef = getCollectionRef(colName);
+            for(let doc of mocks[colName]) {
+                try { await addDoc(colRef, doc); } catch(e){}
+            }
+        }
+    }
+
+    // --- DATA FETCHING ---
+    function setupDataListeners() {
+        if (!state.user) return;
+
+        const collections = ['students', 'courses', 'events', 'announcements'];
+        
+        collections.forEach(col => {
+            if (state.unsubscribes[col]) state.unsubscribes[col](); // cleanup existing
+            
+            const q = getCollectionRef(col);
+            state.unsubscribes[col] = onSnapshot(q, (snapshot) => {
+                const docs = [];
+                snapshot.forEach(doc => {
+                    docs.push({ id: doc.id, ...doc.data() });
+                });
+                state.data[col] = docs;
+                
+                // If totally empty, inject mock data just to show UI capabilities (only run once)
+                if (docs.length === 0 && !localStorage.getItem(`seeded_${col}`)) {
+                    localStorage.setItem(`seeded_${col}`, 'true');
+                    seedMockData(col);
+                }
+
+                updateUIForCollection(col);
+            }, (error) => {
+                console.error(`Error fetching ${col}:`, error);
+            });
+        });
+    }
+
+    // --- UI UPDATERS ---
+    function updateUIForCollection(col) {
+        if (col === 'students') {
+            renderStudents();
+            animateCounters();
+        } else if (col === 'announcements') {
+            renderAnnouncements();
+        } else if (col === 'courses') {
+            renderCourses();
+        } else if (col === 'events') {
+            renderEvents();
+        }
+
+        // If currently on admin tab for this collection, re-render table
+        if (document.getElementById('view-admin').classList.contains('active') && state.adminTab === col) {
+            renderAdminTable();
+        }
+    }
+
+    function renderStudents() {
+        const container = document.getElementById('students-grid');
+        const searchTerm = document.getElementById('student-search')?.value.toLowerCase() || '';
+        const sectionFilter = document.getElementById('student-section-filter')?.value || '';
+
+        let filtered = state.data.students.filter(s => {
+            const matchSearch = s.name?.toLowerCase().includes(searchTerm) || s.studentId?.toLowerCase().includes(searchTerm) || s.skills?.toLowerCase().includes(searchTerm);
+            const matchSection = sectionFilter === '' || s.section === sectionFilter;
+            return matchSearch && matchSection;
+        });
+
+        if (filtered.length === 0) {
+            container.innerHTML = `<div class="col-span-full text-center py-12 text-gray-500">No students found matching your criteria.</div>`;
+            return;
+        }
+
+        container.innerHTML = filtered.map(s => `
+            <div class="glass-card rounded-2xl p-6 text-center transition-transform hover:-translate-y-1 hover:shadow-xl relative overflow-hidden group">
+                <div class="absolute top-0 right-0 bg-gold-500 text-navy-900 text-xs font-bold px-3 py-1 rounded-bl-lg">Sec ${s.section || '-'}</div>
+                <div class="w-24 h-24 mx-auto rounded-full bg-gray-200 border-4 border-white shadow-sm mb-4 overflow-hidden">
+                    <img src="${s.photoUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(s.name || 'S')}&background=0f172a&color=fff&size=100`}" alt="${s.name}" class="w-full h-full object-cover">
+                </div>
+                <h3 class="text-lg font-bold text-navy-900 mb-1">${s.name || 'Unnamed'}</h3>
+                <p class="text-sm text-gray-500 font-medium mb-3">${s.studentId || 'ID N/A'}</p>
+                ${s.skills ? `<p class="text-xs bg-navy-50 text-navy-800 px-2 py-1 rounded-md inline-block mb-3">${s.skills}</p>` : ''}
+                <p class="text-sm text-gray-600 line-clamp-2">${s.bio || 'Student of BBA Batch 2029.'}</p>
+            </div>
+        `).join('');
+    }
+
+    function renderAnnouncements() {
+        // Sort by date desc (simulated memory sort per constraints)
+        const sorted = [...state.data.announcements].sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        // Home View Preview
+        const homeContainer = document.getElementById('home-announcements-container');
+        if(homeContainer) {
+            homeContainer.innerHTML = sorted.slice(0, 3).map(a => `
+                <div class="border-l-4 ${a.priority === 'High' ? 'border-red-500' : 'border-gold-500'} pl-4 py-2 hover:bg-gray-50 transition-colors rounded-r-lg">
+                    <div class="text-xs text-gray-500 font-medium mb-1">${a.date || 'Recent'}</div>
+                    <h4 class="font-bold text-navy-900">${a.title}</h4>
+                </div>
+            `).join('') || '<p class="text-gray-500">No recent announcements.</p>';
+        }
+
+        // Full View
+        const listContainer = document.getElementById('announcements-list');
+        if(listContainer) {
+            listContainer.innerHTML = sorted.map(a => `
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex gap-4">
+                    <div class="flex-shrink-0 mt-1">
+                        <i class="fas fa-bullhorn text-2xl ${a.priority === 'High' ? 'text-red-500' : 'text-gold-500'}"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-3 mb-1">
+                            <h3 class="text-xl font-bold text-navy-900">${a.title}</h3>
+                            ${a.priority === 'High' ? `<span class="bg-red-100 text-red-700 text-xs px-2 py-0.5 rounded-full font-bold">Important</span>` : ''}
+                        </div>
+                        <div class="text-sm text-gray-500 mb-3">${a.date}</div>
+                        <p class="text-gray-700 leading-relaxed">${a.message}</p>
+                    </div>
+                </div>
+            `).join('') || '<p class="text-center text-gray-500">No announcements found.</p>';
+        }
+    }
+
+    function renderCourses() {
+        const tbody = document.getElementById('courses-tbody');
+        if(!tbody) return;
+        tbody.innerHTML = state.data.courses.map(c => `
+            <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-navy-900">${c.code}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${c.name}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600"><i class="fas fa-chalkboard-teacher mr-2 text-gray-400"></i>${c.instructor}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"><span class="bg-gray-100 px-2 py-1 rounded text-xs font-bold">${c.credits}</span></td>
+            </tr>
+        `).join('') || '<tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">No courses listed.</td></tr>';
+    }
+
+    function renderEvents() {
+        const sorted = [...state.data.events].sort((a, b) => new Date(a.date) - new Date(b.date));
+        
+        // Home view (next 2)
+        const homeContainer = document.getElementById('home-events-container');
+        if(homeContainer) {
+            homeContainer.innerHTML = sorted.slice(0, 2).map(e => `
+                <div class="bg-navy-900 text-white rounded-xl p-5 shadow-lg border border-white/10 relative overflow-hidden group">
+                    <div class="absolute -right-6 -top-6 w-24 h-24 bg-gold-500/20 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
+                    <div class="text-gold-400 font-bold text-sm mb-2"><i class="far fa-calendar-alt mr-1"></i> ${e.date}</div>
+                    <h4 class="text-lg font-bold mb-1 relative z-10">${e.title}</h4>
+                    <p class="text-sm text-gray-400 relative z-10"><i class="fas fa-map-marker-alt mr-1"></i> ${e.location}</p>
+                </div>
+            `).join('') || '<p class="text-gray-500">No upcoming events.</p>';
+        }
+
+        // Full view
+        const grid = document.getElementById('events-grid');
+        if(grid) {
+            grid.innerHTML = sorted.map(e => `
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col hover:shadow-md transition-shadow">
+                    <div class="h-48 bg-gray-200 relative">
+                        ${e.imageUrl ? `<img src="${e.imageUrl}" class="w-full h-full object-cover">` : `<div class="w-full h-full bg-navy-800 flex items-center justify-center text-white/20"><i class="fas fa-calendar-star text-6xl"></i></div>`}
+                        <div class="absolute top-4 left-4 bg-white/90 backdrop-blur text-navy-900 font-bold px-3 py-1 rounded-lg text-sm">
+                            ${e.date}
+                        </div>
+                    </div>
+                    <div class="p-6 flex-grow">
+                        <h3 class="text-xl font-bold text-navy-900 mb-2">${e.title}</h3>
+                        <p class="text-sm text-gray-500 mb-4"><i class="fas fa-map-pin mr-2"></i>${e.location}</p>
+                        <p class="text-gray-600 text-sm line-clamp-3">${e.description || 'No description provided.'}</p>
+                    </div>
+                </div>
+            `).join('') || '<div class="col-span-full text-center py-12 text-gray-500">No events found.</div>';
+        }
+    }
+
+    // --- ADMIN LOGIC ---
+    
+    // Setup login form
+    document.getElementById('admin-login-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('admin-email').value;
+        const pass = document.getElementById('admin-password').value;
+        const errDiv = document.getElementById('login-error');
+        
+        try {
+            errDiv.classList.add('hidden');
+            // Set flag so we don't auto-anon-login if they log out
+            localStorage.setItem('admin_attempt', 'true');
+            await signInWithEmailAndPassword(auth, email, pass);
+            showToast('Logged in successfully');
+        } catch (error) {
+            errDiv.textContent = 'Invalid credentials or you are running in an environment without configured Email/Password auth. ' + error.message;
+            errDiv.classList.remove('hidden');
+        }
+    });
+
+    document.getElementById('admin-logout-btn').addEventListener('click', async () => {
+        await signOut(auth);
+        localStorage.removeItem('admin_attempt');
+        // Fallback to anonymous for public reading
+        await signInAnonymously(auth);
+        showToast('Logged out');
+    });
+
+    // Dynamic Admin Tabs
+    window.setAdminTab = (tabName) => {
+        state.adminTab = tabName;
+        document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active', 'bg-gray-100', 'text-navy-900'));
+        const activeBtn = document.querySelector(`.admin-tab-btn[data-tab="${tabName}"]`);
+        if(activeBtn) activeBtn.classList.add('active', 'bg-gray-100', 'text-navy-900');
+        
+        document.getElementById('admin-tab-title').textContent = `Manage ${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`;
+        renderAdminTable();
+    };
+
+    function renderAdminTable() {
+        const schema = schemas[state.adminTab];
+        const items = state.data[state.adminTab];
+        
+        const head = document.getElementById('admin-table-head');
+        const body = document.getElementById('admin-table-body');
+        
+        // Build Headers (only show fields marked adminCol)
+        const displayCols = schema.filter(f => f.adminCol);
+        head.innerHTML = `<tr>
+            ${displayCols.map(c => `<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">${c.label}</th>`).join('')}
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
+        </tr>`;
+        
+        // Build Rows
+        body.innerHTML = items.map(item => `
+            <tr class="hover:bg-gray-50 transition-colors">
+                ${displayCols.map(c => `<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item[c.name] || '-'}</td>`).join('')}
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button onclick="editItem('${item.id}')" class="text-indigo-600 hover:text-indigo-900 mr-3"><i class="fas fa-edit"></i></button>
+                    <button onclick="deleteItem('${item.id}')" class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>
+        `).join('') || `<tr><td colspan="${displayCols.length + 1}" class="px-6 py-8 text-center text-gray-500">No items found.</td></tr>`;
+    }
+
+    // Modal Actions
+    window.openFormModal = (id = null) => {
+        state.editingId = id;
+        const schema = schemas[state.adminTab];
+        const modal = document.getElementById('form-modal');
+        const form = document.getElementById('dynamic-form');
+        document.getElementById('form-modal-title').textContent = id ? `Edit ${state.adminTab.slice(0,-1)}` : `Add New ${state.adminTab.slice(0,-1)}`;
+        
+        let itemData = {};
+        if (id) {
+            itemData = state.data[state.adminTab].find(i => i.id === id) || {};
+        }
+
+        form.innerHTML = schema.map(field => {
+            const val = itemData[field.name] || '';
+            const req = field.required ? 'required' : '';
+            
+            let inputHtml = '';
+            if (field.type === 'textarea') {
+                inputHtml = `<textarea id="field_${field.name}" ${req} rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-navy-900 outline-none">${val}</textarea>`;
+            } else if (field.type === 'select') {
+                inputHtml = `<select id="field_${field.name}" ${req} class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-navy-900 outline-none">
+                    <option value="">Select...</option>
+                    ${field.options.map(o => `<option value="${o}" ${val === o ? 'selected' : ''}>${o}</option>`).join('')}
+                </select>`;
+            } else {
+                inputHtml = `<input type="${field.type}" id="field_${field.name}" value="${val}" ${req} class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-navy-900 outline-none">`;
+            }
+
+            return `<div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">${field.label} ${field.required ? '<span class="text-red-500">*</span>' : ''}</label>
+                ${inputHtml}
+            </div>`;
+        }).join('');
+
+        modal.classList.remove('hidden');
+    };
+
+    window.closeFormModal = () => {
+        document.getElementById('form-modal').classList.add('hidden');
+        state.editingId = null;
+    };
+
+    window.submitForm = async (e) => {
+        e.preventDefault();
+        if(!state.user || state.user.isAnonymous) {
+            showToast('Permission denied. Admin login required.', 'error');
+            return;
+        }
+
+        const schema = schemas[state.adminTab];
+        const form = document.getElementById('dynamic-form');
+        
+        // Basic validation
+        if(!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
+        const newData = {};
+        schema.forEach(field => {
+            newData[field.name] = document.getElementById(`field_${field.name}`).value;
+        });
+
+        try {
+            const colRef = getCollectionRef(state.adminTab);
+            if (state.editingId) {
+                await updateDoc(doc(colRef, state.editingId), newData);
+                showToast('Item updated successfully');
+            } else {
+                await addDoc(colRef, newData);
+                showToast('Item added successfully');
+            }
+            closeFormModal();
+        } catch (error) {
+            console.error("Save error:", error);
+            showToast('Error saving changes. Check permissions.', 'error');
+        }
+    };
+
+    window.editItem = (id) => openFormModal(id);
+
+    window.deleteItem = async (id) => {
+        if(confirm('Are you sure you want to delete this item?')) {
+            try {
+                const colRef = getCollectionRef(state.adminTab);
+                await deleteDoc(doc(colRef, id));
+                showToast('Item deleted');
+            } catch (error) {
+                showToast('Error deleting item', 'error');
+            }
+        }
+    };
+
+    // --- NAVIGATION & DOM LISTENERS ---
+    window.navigate = (targetId) => {
+        // Update URL hash
+        window.history.pushState(null, null, `#${targetId}`);
+        
+        // Hide all views
+        document.querySelectorAll('.view-section').forEach(el => {
+            el.classList.remove('active');
+            el.style.display = 'none'; // force hide
+            setTimeout(() => { if(el.classList.contains('active')) el.style.display = 'block'; }, 10);
+        });
+        
+        // Show target
+        const targetView = document.getElementById(`view-${targetId}`);
+        if(targetView) {
+            targetView.style.display = 'block';
+            setTimeout(() => targetView.classList.add('active'), 20);
+        }
+        
+        // Update Nav links
+        document.querySelectorAll('.nav-link, .mobile-nav-link').forEach(el => {
+            if (el.dataset.target === targetId) {
+                el.classList.add('text-white', 'bg-white/10');
+                el.classList.remove('text-gray-300');
+            } else {
+                el.classList.remove('text-white', 'bg-white/10');
+                el.classList.add('text-gray-300');
+            }
+        });
+
+        // Close mobile menu if open
+        document.getElementById('mobile-menu').classList.add('hidden');
+        window.scrollTo(0,0);
+    };
+
+    // Initialize App
+    window.addEventListener('DOMContentLoaded', () => {
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                nav.classList.add('shadow-lg');
+            } else {
+                nav.classList.remove('shadow-lg');
+            }
+        });
+
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+        // Search Listeners
+        document.getElementById('student-search')?.addEventListener('input', renderStudents);
+        document.getElementById('student-section-filter')?.addEventListener('change', renderStudents);
+
+        // Routing based on hash
+        const hash = window.location.hash.replace('#', '') || 'home';
+        navigate(hash);
+        
+        window.addEventListener('hashchange', () => {
+            navigate(window.location.hash.replace('#', '') || 'home');
+        });
+
+        // Init Firebase
+        initApp();
+    });
+
+    // Helper: Number counters animation
+    function animateCounters() {
+        const counters = document.querySelectorAll('.counter');
+        const speed = 200;
+        counters.forEach(counter => {
+            const updateCount = () => {
+                const target = +counter.getAttribute('data-target');
+                const count = +counter.innerText;
+                const inc = target / speed;
+                if (count < target) {
+                    counter.innerText = Math.ceil(count + inc);
+                    setTimeout(updateCount, 10);
+                } else {
+                    counter.innerText = target;
+                }
+            };
+            updateCount();
+        });
+    }
+
+</script>
+</body>
+</html>
